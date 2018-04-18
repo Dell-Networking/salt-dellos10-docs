@@ -1,2 +1,6 @@
-# salt_dellos10_docs
-Dell EMC Networking OS10 SALT Documentation
+saltstack-dellos10-docs
+=======================
+
+This repository contains the documentation for the Saltstack modules to support Dell EMC Networking OS10 operating system
+
+(c) 2018 Dell EMC
