@@ -2,35 +2,33 @@
 Installation
 ############
 
-This section contains instructions to install Salt with `napalm_dellos10 <https://github.com/napalm-automation-community/napalm-dellos10>`_ proxy.
-we shall cover the setup environment for managing Dell Networking OS10 switches
-
-Install instruction given below is for Linux Debian.
+This information contains instructions to install SaltStack (Salt) with the `napalm_dellos10 <https://github.com/napalm-automation-community/napalm-dellos10>`_ proxy. Included are instructions for the setup environment for managing Dell EMC Networking OS10 switches
 
 Install Salt
--------------
-We need to install the following salt components,
-  1) salt-master
-  2) salt-minion
-  3) salt-proxy
+************
 
-The simplest way to install Salt the above is via `salt bootstrap <https://docs.saltstack.com/en/latest/topics/tutorials/salt_bootstrap.html>`_.
+Installation of Salt contains three components:
+
+* salt-master
+* salt-minion
+* salt-proxy
+
+The simplest way to install Salt is via `salt bootstrap <https://docs.saltstack.com/en/latest/topics/tutorials/salt_bootstrap.html>`_.
 
 ::
 
    wget -O bootstrap-salt.sh https://bootstrap.saltstack.com/develop
    sudo sh bootstrap-salt.sh -M
 
-For more specific installation instructions, see the `platform-specific instructions <https://docs.saltstack.com/en/latest/topics/installation/#platform-specific-installation-instructions>`_ from the official Saltstack
-documentation. Be aware to install the master distribution from the PPA repo, as on the local server will run as Master,
-controlling the devices as Proxy minions.
+See the `platform-specific instructions <https://docs.saltstack.com/en/latest/topics/installation/#platform-specific-installation-instructions>`_ from the official Saltstack
+documentation for more information. Be aware to install the master distribution from the PPA repo, as the local server will run as Master and control the devices as proxy-minions.
 
-`CentOS documentation <https://github.com/napalm-automation/napalm-salt/blob/master/centos_installation.md>`_ can be found.
+See the `CentOS documentation <https://github.com/napalm-automation/napalm-salt/blob/master/centos_installation.md>`_ for more information.
 
-Install Napalm
----------------
+Install NAPALM
+**************
 
-Install Dell Netwokking OS10 NAPALM driver,
+Install the Dell EMC Networking OS10 NAPALM driver:
 
 ::
 
@@ -38,16 +36,12 @@ Install Dell Netwokking OS10 NAPALM driver,
    sudo pip install --upgrade cffi
    sudo pip install napalm-dellos10
 
-The easy way: Salt users can install NAPALM through a single command, using the `napalm-install Saltstack formula <https://github.com/saltstack-formulas/napalm-install-formula>`_
+You can also install NAPALM using `napalm-install Saltstack formula <https://github.com/saltstack-formulas/napalm-install-formula>`_. See `napalm-install-formula <https://mirceaulinic.net/2017-07-06-napalm-install-formula/>`_ for a more detailed usage example.
 
-A more detailed usage example can be `found here <https://mirceaulinic.net/2017-07-06-napalm-install-formula/>`_.
+Configure salt-proxy
+********************
 
-Configure Salt Proxy
----------------------
-
-salt-proxy configuration is as below,
-
-Default location of the salt-proxy configuration file: ``/etc/salt/proxy``
+The salt-proxy configuration is shown, and the default location of the salt-proxy configuration file is ``/etc/salt/proxy``.
 
 ::
 
@@ -56,13 +50,10 @@ Default location of the salt-proxy configuration file: ``/etc/salt/proxy``
   mine_enabled: true # not required, but nice to have
   pki_dir: /etc/salt/pki/proxy # not required - this separates the proxy keys into a different directory
 
+Configure salt-minion
+*********************
 
-Configure Salt Minion
-----------------------
-
-salt-minion configuration is as below,
-
-Default location of the salt-minion configuration file: ``/etc/salt/minion``
+The salt-minion configuration is shown, and the default location of the salt-minion configuration file is ``/etc/salt/minion``.
 
 ::
 
@@ -70,28 +61,26 @@ Default location of the salt-minion configuration file: ``/etc/salt/minion``
 
 .. _configure_connection_to_device:
 
-Configure the connection with a device
----------------------------------------
+Configure connection with device
+********************************
 
-In Salt-napalm, All the switch specific information like switch IP address, credentials shall be configured in the
-pillar file
+In salt-napalm, all switch-specific information such as switch IP address and credentials are configured in the pillar file.
 
 Step 1
-~~~~~~~
+======
 
-Default pillar data file location is ``/srv/pillar``, This directory will not be available by default. We shall create
-it. This location can be changed. for `more information click here <https://docs.saltstack.com/en/latest/ref/configuration/master.html#pillar-roots>`_.
+The default pillar data file location is ``/srv/pillar``. You must create this directory as it will not be available by default (you can change the location later). See `pillar-roots <https://docs.saltstack.com/en/latest/ref/configuration/master.html#pillar-roots>`_ for complete information.
 
 ::
 
    mkdir -p /srv/pillar
 
 Step 2
-~~~~~~~
+======
 
-we need to create a top.sls file in that directory, which tells the salt-master which minions receive which pillar.
+Create a ``top.sls`` file in that directory, which tells the salt-master which minions receive which pillar.
 
-Create and edit the ``/srv/pillar/top.sls`` file and make it look like this:
+Create and edit the ``/srv/pillar/top.sls`` file and match the example:
 
 ::
 
@@ -109,12 +98,10 @@ Create and edit the ``/srv/pillar/top.sls`` file and make it look like this:
 
 .. _pillar_configuration:
 
-STEP 2a
-~~~~~~~~
+Step 2a
+=======
 
-Create DEVICE_SLS_FILENAME mentioned in Step 2 above:
-
-File to be created at location ``/srv/pillar/leaf_1_pillar.sls``
+Create a ``DEVICE_SLS_FILENAME`` file (mentioned in Step 2) in ``/srv/pillar/leaf_1_pillar.sls``:
 
 ::
 
@@ -127,34 +114,33 @@ File to be created at location ``/srv/pillar/leaf_1_pillar.sls``
       optional_args:
         global_delay_factor: 3 # This is optional value, increase value in case device response is slow
 
-``passwd`` mentioned above is in plain text, for encrypting the password refer `here <https://docs.saltstack.com/en/latest/ref/renderers/all/salt.renderers.gpg.html>`_
+The ``passwd`` is in plain-text and is used for encrypting the password (see `salt-renderers.gpg <https://docs.saltstack.com/en/latest/ref/renderers/all/salt.renderers.gpg.html>`_).
 
-Start the Salt Services
-------------------------
+Start Salt Services
+*******************
 
 ::
 
   sudo systemctl start salt-master
   sudo systemctl restart salt-minion
 
-Start the proxy minion for your device
----------------------------------------
+Start proxy-minion for device
+=============================
 
-Start with testing proxy minion:
+Test the proxy-minion:
 
 ::
 
   sudo salt-proxy --proxyid=[DEVICE_ID] -l debug
 
-On the first connection attempt you will find the that minion cannot talk and is stuck with the following error message:
+On the first connection attempt, the minion cannot talk and is stuck with an error message:
 
 ::
 
   [ERROR   ] The Salt Master has cached the public key for this node, this salt minion will wait for 10 seconds before attempting to re-authenticate
   [INFO    ] Waiting 10 seconds before retry.
 
-This is normal and is due to the salt key from the minion not being accepted by the master.
-Quit the minion with ``CTRL``+ ``C`` and run sudo ``salt-key``
+This is normal and is due to the salt key from the minion not being accepted by the master. Quit the minion with ``CTRL + C`` and run sudo ``salt-key``.
 
 ::
 
@@ -164,8 +150,7 @@ Quit the minion with ``CTRL``+ ``C`` and run sudo ``salt-key``
     LEAF_2
     Accepted Keys:
 
-This example shows that the Salt Master is aware of four Minions, but none of the keys has been accepted.
-To accept the keys and allow the Minions to be controlled by the Master, again use the ``salt-key`` command:
+This example shows that the salt-master is aware of four salt-minions, but none of the keys has been accepted. To accept the keys and allow the Minions to be controlled by the salt-master, use the ``salt-key`` command:
 
 ::
 
@@ -176,36 +161,32 @@ To accept the keys and allow the Minions to be controlled by the Master, again u
     LEAF_1
     LEAF_2
 
-The salt-key command allows for signing keys individually or in bulk.
-The example above, using -A bulk-accepts all pending keys.
-To accept keys individually use the lowercase of the same option, -a keyname.
+The salt-key command allows for signing keys individually or in bulk. The example shows using ``-A`` bulk-accepts all pending keys. To accept keys individually, use the lowercase of the same option (``-a``).
 
-Now start the proxy again
+Start the proxy again.
 
 Test your configuration
-------------------------
+=======================
 
-Once the key has been accepted, restart the proxy in debug mode and start a separate terminal session.
-In your new terminal, issue the following command:
+Once the key has been accepted, restart the proxy in debug mode and start a separate terminal session:
 
 ::
 
   sudo salt 'LEAF_1' test.ping
 
-To test for all leaf devices, run command as below,
+To test for all leaf devices:
 
 ::
 
   sudo salt 'LEAF_*' test.ping
 
-It should return True if there are no problems. If everything checks out, hit ``CTRL``+``C`` and
-restart ``salt-proxy`` as a daemon.
+It should return True if there are no problems. If everything checks out, hit ``CTRL + C`` and restart ``salt-proxy`` as a daemon.
 
 ::
 
   sudo salt-proxy --proxyid=[DEVICE_ID] -d
 
-In our case it is
+Example:
 
 ::
 
