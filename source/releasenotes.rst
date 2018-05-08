@@ -7,13 +7,11 @@ This information contains the release notes for Dell EMC Networking OS10 support
 Release 1.0.0
 *************
 
-This release introduces:
+Initial SaltStack support for Dell EMC Networking OS10 switches.
 
-- Initial Saltstack support for Dell EMC Networking OS10 switches
-
-- New modules:
+New modules:
    
-    - napalm_network
-    - napalm_bgp
-    - napalm_snmp
-    - napalm_route
+* ``napalm_network``
+* ``napalm_bgp``
+* ``napalm_snmp``
+* ``napalm_route``
