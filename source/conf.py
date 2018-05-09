@@ -52,7 +52,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Dell EMC Networking Saltstack Integration'
-copyright = u'2018, Dell Inc'
+copyright = u'(c) 2018 Dell Inc. or its subsidiaries. All Rights Reserved.'
 author = u'Dell EMC Networking Team'
 
 # The version info for the project you're documenting, acts as replacement for
