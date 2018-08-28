@@ -34,7 +34,7 @@ Install the Dell EMC Networking OS10 NAPALM driver:
 
    sudo apt-get install libffi-dev libssl-dev python-dev python-cffi libxslt1-dev python-pip
    sudo pip install --upgrade cffi
-   sudo pip install napalm-dellos10
+   sudo pip install https://github.com/napalm-automation-community/napalm-dellos10/archive/v1.0.5.zip 
 
 You can also install NAPALM using `napalm-install Saltstack formula <https://github.com/saltstack-formulas/napalm-install-formula>`_. See `napalm-install-formula <https://mirceaulinic.net/2017-07-06-napalm-install-formula/>`_ for a more detailed usage example.
 
